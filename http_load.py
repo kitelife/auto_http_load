@@ -106,10 +106,11 @@ class HttpLoad(object):
         # 设置纵坐标的最小值最大值
         plt.ylim(0, max(yaxis) + 100)
         plt.plot(xaxis, yaxis, 'b*-', linewidth=2)
+        # 绘制线上每个数据点所在纵坐标的值
         for index, y in enumerate(yaxis):
-            # 绘制线上每个数据点所在纵坐标的值
             plt.text(xaxis[index], y, str(int(y)))
-            fig.savefig('http_load_%s_%d.png' % (self.url_md5, self.request_num), dpi=fig.dpi)
+        # 保存绘图结果
+        fig.savefig('http_load_%s_%d.png' % (self.url_md5, self.request_num), dpi=fig.dpi)
     
     def run(self):
         self.__shoot()
