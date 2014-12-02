@@ -1,4 +1,4 @@
-`auto_http_load` 基于Apache Benchmark做压力测试，并将压测结果使用matplotlib绘制成图。
+`auto_http_load` 基于Apache Benchmark做批量压力测试，并将压测结果使用matplotlib绘制成图。
 
 ### 依赖
 
