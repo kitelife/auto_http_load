@@ -27,15 +27,22 @@ class HttpLoad(object):
         self.path = '/' + '/'. join(url_parts[3:])
         self.url_md5 = hashlib.md5(self.url).hexdigest()
         
+        # 一次ab命令的请求数
         self.request_num = request_num
         self.debug = debug
         
         self.other_configs = other_configs
         
+        # 最小并发数
         self.currency_min = self.other_configs.get('currency_min', 50)
+        # 并发数步进大小
         self.currency_interval = self.other_configs.get('currency_interval', 50)
         # 实际上是达不到这个上限的
+        # 最大并发数
         self.currency_max = self.request_num
+        
+        # 两次执行ab命令的时间间隔，单位为秒
+        self.task_interval = self.other_configs.get('task_interval', 20)
         
         self.load_results = []
     
@@ -71,7 +78,7 @@ class HttpLoad(object):
                 'currency': currency,
                 'result': req_ps
             })
-            time.sleep(10)
+            time.sleep(self.task_interval)
     
     def __plot(self):
         if self.debug:
@@ -90,12 +97,17 @@ class HttpLoad(object):
         plt.title('%s (URL: %s, %d Requests)' % (fig_title, self.path, self.request_num))
         plt.ylabel('requests / s')
         plt.xlabel('concurrency')
+        # 显示网格，颜色为红色
         plt.grid(color='r')
+        # 设置横坐标的最小值和最大值
         plt.xlim(xaxis[0], xaxis[-1])
+        # 设置横坐标的刻度
         plt.xticks(arange(self.currency_min, self.currency_max, self.currency_interval), tuple(xaxis))
+        # 设置纵坐标的最小值最大值
         plt.ylim(0, max(yaxis) + 100)
         plt.plot(xaxis, yaxis, 'b*-', linewidth=2)
         for index, y in enumerate(yaxis):
+            # 绘制线上每个数据点所在纵坐标的值
             plt.text(xaxis[index], y, str(int(y)))
             fig.savefig('http_load_%s_%d.png' % (self.url_md5, self.request_num), dpi=fig.dpi)
     
@@ -107,7 +119,7 @@ class HttpLoad(object):
 def parse_arguments():
     parser = argparse.ArgumentParser(description='parse arguments')
     parser.add_argument('-c', action='store', dest='config', default='./config.json')
-    parser.add_argument('-v', action='store', dest='debug', default=False)
+    parser.add_argument('-v', action='store_true', dest='debug', default=False)
     return parser.parse_args()
 
 
@@ -121,7 +133,9 @@ def main():
     
     with open(target_config_file) as fh:
         configs = json.load(fh)
-    
+    # request_num_list 请求数列表
+    # target_url_list 待压测的URL列表
+    # 组合任务数 = len(request_num_list) x len(target_url_list)
     request_num_list = configs.pop('request_num_list', None)
     target_url_list = configs.pop('target_url_list', None)
     if request_num_list is None or target_url_list is None:

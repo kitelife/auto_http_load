@@ -1,13 +1,14 @@
 {
-    'request_num_list': [1000, 1500, 1800],
-    'target_url_list': [
-        'http://test.com/',
-        'http://test.com/hello/'
+    "request_num_list": [1000, 1500, 1800],
+    "target_url_list": [
+        "http://test.com/",
+        "http://test.com/hello/"
     ],
-    'currency_min': 50,
-    'currency_interval': 50,
-    'figure': {
-        'title': 'HTTP Load',
-        'size': [20, 10]
+    "task_interval": 20,
+    "currency_min": 50,
+    "currency_interval": 50,
+    "figure": {
+        "title": "HTTP Load",
+        "size": [20, 10]
     }
 }
