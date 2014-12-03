@@ -51,7 +51,7 @@ class HttpLoad(object):
         for currency_item in xrange(self.currency_min, self.currency_max, self.currency_interval):
             ab_currency_list.append(currency_item)
         
-        ab_command_pattern = 'ab -n %d -c %d %s'
+        ab_command_pattern = 'ab -r -n %d -c %d %s'
         
         regex_pattern = re.compile(r'Requests per second:\s+(?P<req_ps>[\d.]+) \[#/sec\] \(mean\)')
         
